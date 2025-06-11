@@ -22,6 +22,7 @@ jobs:
 
       - name: Setup Environment
         uses: msys2/setup-msys2@v2
+        id: msys2
         with:
           msystem: MINGW64
           update: true
@@ -37,10 +38,12 @@ jobs:
 
       - name: Release files
         shell: cmd
+        env:
+          MSYS2_LOCATION: ${{ steps.msys2.outputs.msys2-location }}
         run: |
           mkdir build\release
           xcopy "build\innoextract.exe" "build\release" /Y
-          xcopy "D:\a\_temp\msys64\mingw64\bin\*.dll" "build\release" /Y
+          xcopy "%MSYS2_LOCATION%\mingw64\bin\*.dll" "build\release" /Y
           powershell -c "Compress-Archive -Path .\build\release\libbz2-1.dll, .\build\innoextract.exe -DestinationPath innoextract-windows.zip"
 
       - name: Archive artifacts
