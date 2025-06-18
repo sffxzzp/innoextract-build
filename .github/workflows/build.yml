@@ -40,6 +40,11 @@ jobs:
           mingw32-make -j8
           strip innoextract.exe
 
+      - name: Install UPX
+        uses: crazy-max/ghaction-upx@v3
+        with:
+          install-only: true
+
       - name: Release files
         shell: cmd
         env:
@@ -48,13 +53,14 @@ jobs:
           mkdir build\release
           xcopy "build\innoextract.exe" "build\release" /Y
           xcopy "%MSYS2_LOCATION%\mingw64\bin\*.dll" "build\release" /Y
-          powershell -c "Compress-Archive -Path .\build\release\libbz2-1.dll, .\build\innoextract.exe -DestinationPath innoextract-windows.zip"
+          upx --ultra-brute --lzma .\build\innoextract.exe
+          powershell -c "Compress-Archive -Path .\build\innoextract.exe -DestinationPath innoextract-windows.zip"
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v4
         with:
           name: innoextract
-          path: build/release
+          path: innoextract-windows.zip
 
       - name: Release
         uses: softprops/action-gh-release@v2
