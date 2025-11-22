@@ -6,6 +6,11 @@ on:
   repository_dispatch:
     types: [build-on-demand]
   workflow_dispatch:
+    inputs:
+      target_repo:
+        description: target innoextract repo, default is dscharrer/innoextract.
+        required: false
+        default: "dscharrer/innoextract"
 
 jobs:
 
@@ -18,7 +23,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          repository: "dscharrer/innoextract"
+          repository: ${{ github.event.inputs.target_repo }}
 
       - name: Setup Environment
         uses: msys2/setup-msys2@v2
