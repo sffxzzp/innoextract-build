@@ -11,6 +11,10 @@ on:
         description: target innoextract repo, default is dscharrer/innoextract.
         required: false
         default: "dscharrer/innoextract"
+      branch:
+        description: target branch
+        required: false
+        default: "master"
 
 jobs:
 
@@ -21,9 +25,10 @@ jobs:
         shell: msys2 {0}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: ${{ github.event.inputs.target_repo }}
+          ref: ${{ github.event.inputs.branch }}
 
       - name: Setup Environment
         uses: msys2/setup-msys2@v2
@@ -62,7 +67,7 @@ jobs:
           powershell -c "Compress-Archive -Path .\build\innoextract.exe -DestinationPath innoextract-windows.zip"
 
       - name: Archive artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: innoextract
           path: innoextract-windows.zip
